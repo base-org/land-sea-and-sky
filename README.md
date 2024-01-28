@@ -1,13 +1,9 @@
-# Sample Hardhat Project
+# Land, Sea, and Sky NFT
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Land, Sea, and Sky is an NFT project that demonstrates building complex NFTs fully onchain.
 
-Try running some of the following tasks:
+To support the frames demo, only the owner of the contract can mint, but can assign the recipient.
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+The owner also has the power to upgrade an NFT, which will cause the whale to render.
+
+Ask Brian Doyle for details.
