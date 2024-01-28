@@ -15,11 +15,13 @@ contract LandSeaSkyNFT is ERC721, Ownable {
     uint public counter;
     uint public constant MAX_SUPPLY = 2_222;
     mapping (uint => bool) public upgraded;
+    mapping (address => bool) public minted;
 
     error InvalidTokenId(uint tokenId);
     error MaxSupplyReached();
     error UpgradesClosed();
     error AlreadyUpgraded();
+    error OneMintPerAddress();
 
     ISVGRenderer svgRenderer;
 
@@ -30,6 +32,9 @@ contract LandSeaSkyNFT is ERC721, Ownable {
     function mintFor(address _recipient) public onlyOwner {
       if(counter >= MAX_SUPPLY) {
         revert MaxSupplyReached();
+      }
+      if(minted[_recipient]) {
+        revert OneMintPerAddress();
       }
       counter++;
       _safeMint(_recipient, counter);
