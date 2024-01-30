@@ -42,6 +42,15 @@ const config: HardhatUserConfig = {
           apiURL: "https://api-sepolia.basescan.org/api",
           browserURL: "https://sepolia.basescan.org"
         }
+      },
+      {
+        network: "base",
+        chainId: 8453,
+        urls: {
+          // Basescan by Etherscan
+          apiURL: "https://api.basescan.org/api",
+          browserURL: "https://basescan.org"
+        }
       }
     ]
   },
@@ -54,14 +63,14 @@ const config: HardhatUserConfig = {
       url: 'https://sepolia.base.org',
       accounts: [process.env.COINBASE_WALLET_KEY as string]
     },
+    'base': {
+      url: 'https://mainnet.base.org',
+      accounts: [process.env.COINBASE_WALLET_KEY as string]
+    },
     goerli: {
       url: process.env.COINBASE_NODE_GOERLI_ADDRESS || "",
       accounts: [process.env.COINBASE_WALLET_KEY as string]
     }
-    // goerli: {
-    //   url: `https://eth-goerli.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
-    //   accounts: [process.env.COINBASE_WALLET_KEY || ""]
-    // }
   },
 };
 
