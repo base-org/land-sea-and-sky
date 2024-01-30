@@ -36,6 +36,7 @@ contract LandSeaSkyNFT is ERC721, Ownable {
       if(minted[_recipient]) {
         revert OneMintPerAddress();
       }
+      minted[_recipient] = true;
       counter++;
       _safeMint(_recipient, counter);
     }
