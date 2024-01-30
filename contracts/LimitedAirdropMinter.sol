@@ -7,14 +7,13 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-interface ISVGRenderer {
-  function render(uint tokenId, bool _updgraded) external view returns (string memory);
-}
-
-contract LandSeaSkyNFT is ERC721, Ownable {
+contract LimitedAirdropMinter is ERC721, Ownable {
     uint public counter;
-    uint public constant MAX_SUPPLY = 2_222;
-    mapping (uint => bool) public upgraded;
+    uint public maxSupply;
+    string public nameString;
+    string public description;
+    string public tokenArtIPFSId;
+
     mapping (address => bool) public minted;
 
     error InvalidTokenId(uint tokenId);
@@ -23,14 +22,22 @@ contract LandSeaSkyNFT is ERC721, Ownable {
     error AlreadyUpgraded();
     error OneMintPerAddress();
 
-    ISVGRenderer svgRenderer;
-
-    constructor(address _svgRenderer) ERC721("Land, Sea, and Sky", "LSS") Ownable(msg.sender) {
-      svgRenderer = ISVGRenderer(_svgRenderer);
+    constructor(
+      address _backendMinterAddress,
+      uint _maxSupply,
+      string memory _nameString,
+      string memory _symbol,
+      string memory _tokenArtIPFSId,
+      string memory _description
+      ) ERC721(_nameString, _symbol) Ownable(_backendMinterAddress) {
+      maxSupply = _maxSupply;
+      nameString = _nameString;
+      description = _description;
+      tokenArtIPFSId = _tokenArtIPFSId;
     }
 
     function mintFor(address _recipient) public onlyOwner {
-      if(counter >= MAX_SUPPLY) {
+      if(counter >= maxSupply) {
         revert MaxSupplyReached();
       }
       if(minted[_recipient]) {
@@ -47,17 +54,19 @@ contract LandSeaSkyNFT is ERC721, Ownable {
 
     function tokenURI(uint _tokenId) public view override returns (string memory) {
       if(_tokenId > counter) {
-        revert InvalidTokenId(_tokenId); // Don't forget to add the error above!
+        revert InvalidTokenId(_tokenId);
       }
 
       string memory json = Base64.encode(
         bytes(
           string(
             abi.encodePacked(
-              '{"name": "Land, Sea, and Sky #: ', 
+              '{"name": "',
+              nameString,
+              '" #: ', 
               Strings.toString(_tokenId), 
-              '", "description": "Land, Sea, and Sky is a collection of generative art pieces stored entirely onchain.", "image": "data:image/svg+xml;base64,',
-              Base64.encode(bytes(svgRenderer.render(_tokenId, upgraded[_tokenId]))),
+              '", "description": "", "image": "ipfs://',
+              tokenArtIPFSId,
               '"}'
             )
           )
@@ -65,15 +74,5 @@ contract LandSeaSkyNFT is ERC721, Ownable {
       );
 
       return string(abi.encodePacked(_baseURI(), json));
-    }
-
-    function upgradeToken(uint _tokenId) public onlyOwner {
-      if(counter >= MAX_SUPPLY) {
-        revert UpgradesClosed();
-      }
-      if(upgraded[_tokenId]) {
-        revert AlreadyUpgraded();
-      }
-      upgraded[_tokenId] = true;
     }
 }
