@@ -25,7 +25,7 @@ contract LandSeaSkyNFT is ERC721, Ownable {
 
     ISVGRenderer svgRenderer;
 
-    constructor(address _svgRenderer) ERC721("Land, Sea, and Sky", "LSS") Ownable(msg.sender) {
+    constructor(address _svgRenderer) ERC721("Land, Sea, and Sky", "LSS") Ownable(0x83957ef9df51257bD59743FcBde02f2752d6498D) {
       svgRenderer = ISVGRenderer(_svgRenderer);
     }
 
