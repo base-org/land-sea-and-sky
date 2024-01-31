@@ -7,7 +7,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
     
   const argumentValues = [
-    "0xac5b774D7a700AcDb528048B6052bc1549cd73B9",
+    "0x83957ef9df51257bD59743FcBde02f2752d6498D",
     3333,
     "Test Token, Please Ignore",
     "TST",

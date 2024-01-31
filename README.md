@@ -8,6 +8,6 @@ The owner also has the power to upgrade an NFT, which will cause the whale to re
 
 ![sample](./nft.png)
 
-Learn how to make this smart contract! [Tutorial](https://docs.base.org/guides/onchain-generative-nfts)
+Learn how to make this smart contract! [Tutorial](https://docs.base.org/building-with-base/guides/complex-onchain-nfts)
 
 Ask Brian Doyle for details.
