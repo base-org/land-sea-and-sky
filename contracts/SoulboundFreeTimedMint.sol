@@ -7,45 +7,37 @@ import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract LimitedAirdropMinter is ERC721, Ownable {
+contract SoulboundFreeTimedMint is ERC721, Ownable {
     uint public counter;
-    uint public maxSupply;
+    uint public mintEndUnixTimestamp;
     string public nameString;
     string public description;
     string public tokenArtIPFSId;
 
-    mapping (address => bool) public minted;
-
     error InvalidTokenId(uint tokenId);
-    error MaxSupplyReached();
-    error UpgradesClosed();
-    error AlreadyUpgraded();
-    error OneMintPerAddress();
+    error MintOver();
+    error SoulboundToken();
 
     constructor(
-      address _backendMinterAddress,
-      uint _maxSupply,
+      uint _mintEndUnixTimestamp,
       string memory _nameString,
       string memory _symbol,
       string memory _tokenArtIPFSId,
       string memory _description
-      ) ERC721(_nameString, _symbol) Ownable(_backendMinterAddress) {
-      maxSupply = _maxSupply;
+      ) ERC721(_nameString, _symbol) Ownable(msg.sender) {
+      mintEndUnixTimestamp = _mintEndUnixTimestamp;
       nameString = _nameString;
       description = _description;
       tokenArtIPFSId = _tokenArtIPFSId;
     }
 
-    function mintFor(address _recipient) public onlyOwner {
-      if(counter >= maxSupply) {
-        revert MaxSupplyReached();
+    function mint() public {
+      if(block.timestamp > mintEndUnixTimestamp) {
+        revert MintOver();
       }
-      if(minted[_recipient]) {
-        revert OneMintPerAddress();
-      }
-      minted[_recipient] = true;
+      
       counter++;
-      _safeMint(_recipient, counter);
+      _safeMint(msg.sender, counter);
     }
 
     function _baseURI() internal pure override returns (string memory) {
@@ -65,7 +57,9 @@ contract LimitedAirdropMinter is ERC721, Ownable {
               nameString,
               ' #: ', 
               Strings.toString(_tokenId), 
-              '","description": "", "image": "ipfs://',
+              '","description": "',
+              description,
+              '", "image": "ipfs://',
               tokenArtIPFSId,
               '"}'
             )
@@ -74,5 +68,25 @@ contract LimitedAirdropMinter is ERC721, Ownable {
       );
 
       return string(abi.encodePacked(_baseURI(), json));
+    }
+
+    /**
+     * Disallow transfers (Soulbound NFT)
+     */
+    /**
+     * @dev Internal function to handle token transfers.
+     * Restricts the transfer of Soulbound tokens.
+     */
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        override(ERC721)
+        returns (address)
+    {
+        address from = _ownerOf(tokenId);
+        if (from != address(0) && to != address(0)) {
+            revert SoulboundToken();
+        }
+
+        return super._update(to, tokenId, auth);
     }
 }

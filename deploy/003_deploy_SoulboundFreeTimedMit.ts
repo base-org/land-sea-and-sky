@@ -7,23 +7,22 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
     
   const argumentValues = [
-    "0x83957ef9df51257bD59743FcBde02f2752d6498D",
-    3333,
-    "Test Token, Please Ignore",
-    "TST",
-    "QmNSoY62TSvLQ8hp8s1U5ShUZpeiPRrv4huMXWnCh3Euee",
-    "This is only a test!",
-  ]
+    1710518400,
+    "Frames of the Future",
+    "FRAME",
+    "QmWDZBzUSrM24c8v59XYhfNdtLFWndpNtqYTWCNnKgTaQ2",
+    "Base celebrates the launch of transactions in Farcaster frames, unlocking the next wave of innovation in onchain experiences.",
+  ];
     
-  const LimitedAirdropMinter = await deploy("LimitedAirdropMinter", {
+  const SoulboundFreeTimedMint = await deploy("SoulboundFreeTimedMint", {
     from: deployer,
-    args: argumentValues
+    args: argumentValues,
   });
 
   await hre.run("verify:verify", {
-    address: LimitedAirdropMinter.address,
+    address: SoulboundFreeTimedMint.address,
     constructorArguments: argumentValues,
-    contract: "contracts/LimitedAirdropMinter.sol:LimitedAirdropMinter"
+    contract: "contracts/SoulboundFreeTimedMint.sol:SoulboundFreeTimedMint",
   });
 };
 export default func;
