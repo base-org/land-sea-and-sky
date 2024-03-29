@@ -7,14 +7,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
     
   const argumentValues = [
-    1710979200,
-    "EIP-4844 is Based",
-    "$4844",
-    "QmPLdLhPipZ5Lb5XQcmmGCtdVqE1nr8jmZKnT3cSJULRFL",
-    "Cheaper, faster transactions make the world go round. Lower gas fees are a critical step towards a new internet and a new economy. Base is for everyone.",
+    1710734399, // Timestamp to Close
+    "Base @ ETHGlobal London", // Name
+    "B@EGL24", // Symbol
+    "QmSodRZ7ocSFtsNFu7SaxqKoZUb8oZxWeNotkLbmohtv1p", // IPFS Hash
+    "", // Description
   ];
     
-  const SoulboundFreeTimedMint = await deploy("SoulboundFreeTimedMint", {
+  const SoulboundFreeTimedMint = await deploy("Base@ETHGlobalLondon", {
+    contract: "SoulboundFreeTimedMint",
     from: deployer,
     args: argumentValues,
   });
