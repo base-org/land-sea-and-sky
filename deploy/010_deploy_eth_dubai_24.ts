@@ -34,6 +34,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deployedContract.addAllowed(
     "0x836fa72d2af55d698e8767acbe88c042b8201036"
   ); // Ryan
+  await deployedContract.addAllowed(
+    "0x058F4718624fCC5006d89ecC8c76E5bAf5320590"
+  ); // Ryan Alt
 
   await hre.run("verify:verify", {
     address: DeployedContract.address,
