@@ -1,14 +1,18 @@
+// MOVED TO NEW REPO:
+
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 contract SoulboundSignatureMint is ERC721, Ownable {
+    using ECDSA for bytes32;
+    using MessageHashUtils for bytes32;
     uint public counter;
     string public nameString;
     string public description;
@@ -40,8 +44,9 @@ contract SoulboundSignatureMint is ERC721, Ownable {
 
     function validateSignature(address _recipient, bytes memory _signature) public view returns (bool) {
       bytes32 messageHash = keccak256(abi.encodePacked(_recipient));
-      bytes32 ethSignedMessageHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", messageHash.length, messageHash));
-      address signer = ECDSA.recover(ethSignedMessageHash, _signature);
+      bytes32 ethSignedMessageHash = messageHash.toEthSignedMessageHash();
+      address signer = ethSignedMessageHash.recover(_signature);
+
       return signer == owner();
     }
 
